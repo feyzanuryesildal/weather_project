@@ -43,8 +43,8 @@ class _weatherViewState extends State<weatherView> {
     }
     _locData = await location.getLocation();
     setState(() {
-      UserLocation.lat= _locData.latitude!;
-      UserLocation.long = _locData.longitude!;
+      userLocation.lat= _locData.latitude!;
+      userLocation.long = _locData.longitude!;
     });
     
     Timer(Duration(milliseconds: 500), (){

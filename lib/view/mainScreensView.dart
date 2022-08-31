@@ -18,7 +18,7 @@ class _mainScreenViewState extends State<mainScreenView> {
   String country = '';
   String adminArea = '';
   late final displayDate;
-  var sizeH,sizeW;
+  var sizeH,sizeW,size;
   CustomIcon customIcon = CustomIcon();
   late Future<WeatherModel> futureAlbum;
   @override
@@ -36,7 +36,7 @@ class _mainScreenViewState extends State<mainScreenView> {
 
 
   Future<void> getLocation() async {
-    List<Placemark> placeMark= await placemarkFromCoordinates(UserLocation.lat, UserLocation.long);
+    List<Placemark> placeMark= await placemarkFromCoordinates(userLocation.lat, userLocation.long);
     setState(() {
       country = placeMark[0].country.toString();
       adminArea = placeMark[0].administrativeArea.toString();
@@ -47,6 +47,7 @@ class _mainScreenViewState extends State<mainScreenView> {
   Widget build(BuildContext context) {
     sizeH = MediaQuery.of(context).size.height*0.02;
     sizeW = MediaQuery.of(context).size.width*0.02;
+    size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xfffffeebcf),
@@ -77,79 +78,98 @@ class _mainScreenViewState extends State<mainScreenView> {
             tileMode: TileMode.mirror,
           ),
         ),
-        child: Center(
-          child:
-          Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(),
-              Padding(padding: EdgeInsets.all( 20.0),child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('${country},',style: TextStyle(fontSize: 30),),
-                  Text('${adminArea}',style: TextStyle(fontSize: 20),),
-                  SizedBox(
-                    height: sizeH,
-                  ),
-                  Text('${displayDate}',style: TextStyle(color: Colors.grey),),
-                  Row(
-                    children: [
-                      Icon(Icons.cloud_outlined,size: 200,),
-                      SizedBox(
-                        width: sizeW*7,
-                      ),
-                      Column(
-                        children: [
-                          FutureBuilder<WeatherModel>(
-                            future: futureAlbum,
-                            builder: (context, snapshot) {
-                              if (snapshot.hasData) {
-                                return Text("${snapshot.data!.main!.temp.toString()}",style: TextStyle(fontSize: 30),);
-                              } else if (snapshot.hasError) {
-                                return Text('${snapshot.error}');
-                              }
-                              // By default, show a loading spinner.
-                              return const CircularProgressIndicator();
-                            },
-                          ),
+        child:FutureBuilder<WeatherModel>(
+          future: futureAlbum,
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
+              return  Center(
+                child:
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(),
+                    Padding(padding: EdgeInsets.all( 20.0),child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('${country},',style: TextStyle(fontSize: 30),),
+                        Text('${adminArea}',style: TextStyle(fontSize: 20),),
+                        SizedBox(
+                          height: sizeH,
+                        ),
+                        Text('${displayDate}',style: TextStyle(color: Colors.grey),),
+                        Row(
+                          children: [
+                            Container(
+                                height: size.height*0.3,
+                                width: size.width*0.5,
 
-                          Text("Rainy",style: TextStyle(fontSize: 30),),
-                        ],
-                      ),
-                    ],
-                  ),
-                  FutureBuilder<WeatherModel>(
-                    future: futureAlbum,
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData) {
-                        return IconCard(deger: snapshot.data!.weather![0].main.toString());
-                      } else if (snapshot.hasError) {
-                        return Text('${snapshot.error}');
-                      }
-                      // By default, show a loading spinner.
-                      return const CircularProgressIndicator();
-                    },
-                  ),
+                                child: Image.network('http://openweathermap.org/img/wn/${snapshot.data!.weather![0].icon}.png',fit: BoxFit.cover)),
+                            //Icon(Icons.cloud_outlined,size: 200,),
+                            SizedBox(
+                              width: sizeW*5,
+                            ),
+                            Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text('${translateDer(snapshot.data!.main!.temp)}',style: TextStyle(fontSize: 30),),
+                                    Column(
+                                      children: [
+                                        Text('°C',style: TextStyle(fontSize: 20,color: Colors.grey), ),
+                                        SizedBox(
+                                          height: 10,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                Text("${snapshot.data!.weather![0].description.toString()}",style: TextStyle(fontSize: 18),),
+                              ],
+                            ),
+                          ],
+                        ),
+                        IconCard(deger: '${translateDer(snapshot.data!.main!.feelsLike)}',icon: Icon(Icons.wash_sharp),string: "Hissedilen"),
+                        IconCard(deger: '${snapshot.data!.wind!.speed.toString()}',icon: Icon(Icons.wind_power),string: "Rüzgar      "),
+                        IconCard(deger: '${snapshot.data!.clouds!.all.toString()}',icon: Icon(Icons.cloud_outlined),string: "Bulut Oranı"),
 
 
-                ],
-              ),
+                      ],
+                    ),
 
-              ),
+                    ),
 
-            ],
-          ),
+                  ],
+                ),
+              );
+            } else if (snapshot.hasError) {
+              return Text('${snapshot.error}');
+            }
+            // By default, show a loading spinner.
+            return const CircularProgressIndicator();
+          },
         ),
+
+
+
       ),
     );
   }
 }
 
+translateDer(double? temp) {
+  return (temp! - 273.15).toInt().toString();
+}
+
+
+
 class IconCard extends StatefulWidget {
-  IconCard({required this.deger});
+  IconCard({required this.deger, required this.string, required this.icon});
   final String deger;
+  final String string;
+  final Icon icon;
   @override
   State<IconCard> createState() => _IconCardState();
 }
@@ -171,15 +191,20 @@ class _IconCardState extends State<IconCard> {
             SizedBox(
               width: 10,
             ),
-            Icon(Icons.sunny_snowing),
+            CircleAvatar(
+              backgroundColor: Colors.transparent,
+
+              child:
+              widget.icon,
+            ),
             SizedBox(
               width: 10,
             ),
-            Text("${widget.deger}"),
+            Text("${widget.string}"),
             SizedBox(
-              width: 160,
+              width: 130,
             ),
-            Text("3 cm"),
+            Text("${widget.deger}"),
 
           ],
         ),

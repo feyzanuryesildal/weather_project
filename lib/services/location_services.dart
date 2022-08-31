@@ -1,4 +1,7 @@
 class UserLocation{
-  static double lat=0;
-  static double long=0;
+  late final double lat;
+  late final double long;
+
 }
+
+UserLocation userLocation = UserLocation();

@@ -31,7 +31,7 @@ class _MyAppState extends State<MyApp> {
     );
   }
 }
-/*
+
 Future<WeatherModel> fetchAlbum() async {
   final response = await http
       .get(Uri.parse('https://api.openweathermap.org/data/2.5/weather?lat=35&lon=139&appid=${dotenv.env['API_KEY']}'));
@@ -86,4 +86,4 @@ class _connectState extends State<connect> {
       ),
     );
   }
-}*/
+}

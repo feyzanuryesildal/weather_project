@@ -39,6 +39,8 @@ dependencies:
   geocoding: ^2.0.5
   location: ^4.4.0
   intl: ^0.17.0
+  lottie: ^1.4.2
+  flutter_svg: ^1.1.4
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +67,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - .env
+    - assets/sunset.svg
+
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

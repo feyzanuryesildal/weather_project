@@ -1,11 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_project/services/location_services.dart';
 import 'package:weather_project/util/icon.dart';
-
+import 'package:weather_project/util/weather_icon.dart';
+import 'package:http/http.dart'as http;
 import '../models/weatherModel.dart';
 import '../services/data_serviices.dart';
+
+
+
+
+
+
+
 
 class mainScreenView extends StatefulWidget {
   const mainScreenView({Key? key}) : super(key: key);
@@ -27,12 +37,12 @@ class _mainScreenViewState extends State<mainScreenView> {
     // TODO: implement initState
     super.initState();
     getLocation();
+    print("${userLocation.lat},${userLocation.long}");
+
     var date = DateTime.now();
     displayDate = DateFormat('EEEE, MMM d').format(date);
     futureAlbum = fetchAlbum();
-
   }
-
 
 
   Future<void> getLocation() async {
@@ -41,13 +51,21 @@ class _mainScreenViewState extends State<mainScreenView> {
       country = placeMark[0].country.toString();
       adminArea = placeMark[0].administrativeArea.toString();
 
+
     });
+  }
+
+  translateDer  (double? temp) {
+    return (temp! - 273.15).toInt().toString();
   }
   @override
   Widget build(BuildContext context) {
     sizeH = MediaQuery.of(context).size.height*0.02;
     sizeW = MediaQuery.of(context).size.width*0.02;
     size = MediaQuery.of(context).size;
+
+    
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xfffffeebcf),
@@ -55,6 +73,7 @@ class _mainScreenViewState extends State<mainScreenView> {
         leading: IconButton( //menu icon button at start left of appbar
           onPressed: (){
             print('search butonuna tıklandı!');
+
           },
           icon: customIcon.customSearchBarIcon,
         ),
@@ -105,16 +124,16 @@ class _mainScreenViewState extends State<mainScreenView> {
                                 height: size.height*0.3,
                                 width: size.width*0.5,
 
-                                child: Image.network('http://openweathermap.org/img/wn/${snapshot.data!.weather![0].icon}.png',fit: BoxFit.cover)),
-                            //Icon(Icons.cloud_outlined,size: 200,),
+                                child: weatherIcon.weatherSaturation(snapshot.data!.weather![0].icon.toString()),),
+
                             SizedBox(
-                              width: sizeW*5,
+                              width: sizeW*3,
                             ),
                             Column(
                               children: [
                                 Row(
                                   children: [
-                                    Text('${translateDer(snapshot.data!.main!.temp)}',style: TextStyle(fontSize: 30),),
+                                    Text('${ translateDer(snapshot.data!.main!.temp!)}',style: TextStyle(fontSize: 30),),
                                     Column(
                                       children: [
                                         Text('°C',style: TextStyle(fontSize: 20,color: Colors.grey), ),
@@ -126,7 +145,7 @@ class _mainScreenViewState extends State<mainScreenView> {
                                   ],
                                 ),
 
-                                Text("${snapshot.data!.weather![0].description.toString()}",style: TextStyle(fontSize: 18),),
+                                Text("${snapshot.data!.weather![0].description.toString()}",style: TextStyle(fontSize: 15),),
                               ],
                             ),
                           ],
@@ -144,6 +163,7 @@ class _mainScreenViewState extends State<mainScreenView> {
                   ],
                 ),
               );
+
             } else if (snapshot.hasError) {
               return Text('${snapshot.error}');
             }
@@ -159,7 +179,8 @@ class _mainScreenViewState extends State<mainScreenView> {
   }
 }
 
-translateDer(double? temp) {
+ translateDer  (double? temp) {
+
   return (temp! - 273.15).toInt().toString();
 }
 

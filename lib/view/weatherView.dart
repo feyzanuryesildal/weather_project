@@ -26,6 +26,7 @@ class _weatherViewState extends State<weatherView> {
     PermissionStatus _permissionLocation;
     LocationData _locData;
 
+
     _serviceEnabled = await location.serviceEnabled();
     if (!_serviceEnabled) {
       _serviceEnabled = await location.requestService();

@@ -10,7 +10,7 @@ import 'package:http/http.dart'as http;
 import '../models/weatherModel.dart';
 import '../services/data_serviices.dart';
 
-
+import 'dart:ui';
 
 
 
@@ -120,6 +120,7 @@ class _mainScreenViewState extends State<mainScreenView> {
                         Text('${displayDate}',style: TextStyle(color: Colors.grey),),
                         Row(
                           children: [
+
                             Container(
                                 height: size.height*0.3,
                                 width: size.width*0.5,
@@ -127,32 +128,39 @@ class _mainScreenViewState extends State<mainScreenView> {
                                 child: weatherIcon.weatherSaturation(snapshot.data!.weather![0].icon.toString()),),
 
                             SizedBox(
-                              width: sizeW*3,
+                              width: sizeW*5,
                             ),
                             Column(
                               children: [
                                 Row(
                                   children: [
+                                    SizedBox(
+                                      height: sizeH*3,
+                                    ),
                                     Text('${ translateDer(snapshot.data!.main!.temp!)}',style: TextStyle(fontSize: 30),),
                                     Column(
                                       children: [
+
                                         Text('°C',style: TextStyle(fontSize: 20,color: Colors.grey), ),
                                         SizedBox(
-                                          height: 10,
+                                          height: 15,
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
 
-                                Text("${snapshot.data!.weather![0].description.toString()}",style: TextStyle(fontSize: 15),),
+                                Text("${snapshot.data!.weather![0].main.toString()}",style: TextStyle(fontSize: 15),),
                               ],
                             ),
                           ],
                         ),
-                        IconCard(deger: '${translateDer(snapshot.data!.main!.feelsLike)}',icon: Icon(Icons.wash_sharp),string: "Hissedilen"),
-                        IconCard(deger: '${snapshot.data!.wind!.speed.toString()}',icon: Icon(Icons.wind_power),string: "Rüzgar      "),
-                        IconCard(deger: '${snapshot.data!.clouds!.all.toString()}',icon: Icon(Icons.cloud_outlined),string: "Bulut Oranı"),
+                        SizedBox(
+                          height: sizeH*2,
+                        ),
+                        IconCard(deger: '${translateDer(snapshot.data!.main!.feelsLike)}',icon: Icon(Icons.wash_sharp),string: "Feels Like"),
+                        IconCard(deger: '${snapshot.data!.wind!.speed.toString()}',icon: Icon(Icons.wind_power),string: "Speed      "),
+                        IconCard(deger: '${snapshot.data!.clouds!.all.toString()}',icon: Icon(Icons.cloud_outlined),string: "Clouds"),
 
 
                       ],
@@ -199,40 +207,55 @@ class _IconCardState extends State<IconCard> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 400,
-      height: 70,
-      child: Card(
-        margin: EdgeInsets.all(10),
-        elevation: 4,
-        shape:
-        RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        color: Colors.white,
-        child: Row(
-          children: [
-            SizedBox(
-              width: 10,
-            ),
-            CircleAvatar(
-              backgroundColor: Colors.transparent,
 
-              child:
-              widget.icon,
+      decoration:  BoxDecoration(
+        border: Border.all(
+        color: Colors.transparent,
+        width: 5,
+    ),
+    borderRadius: BorderRadius.circular(10),),
+      child: BackdropFilter(
+        filter: ImageFilter.blur(sigmaX: 0.0, sigmaY: 0.0),
+        child: Center(
+          child: Card(
+            elevation: 0,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadius.circular(10.0),
             ),
-            SizedBox(
-              width: 10,
-            ),
-            Text("${widget.string}"),
-            SizedBox(
-              width: 130,
-            ),
-            Text("${widget.deger}"),
+            color: Colors.white.withOpacity(0.5),
+            child:  SizedBox(
+              width: 300,
+              height: 60,
+              child: Center(
+                child: Row(
+                  children: [
+                    SizedBox(
+                      width: 10,
+                    ),
+                    CircleAvatar(
+                      backgroundColor: Colors.transparent,
 
-          ],
+                      child:
+                      widget.icon,
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    Text("${widget.string}"),
+                    SizedBox(
+                      width: 130,
+                    ),
+                    Text("${widget.deger}"),
+
+                  ],
+                ),
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 }
-
 
 

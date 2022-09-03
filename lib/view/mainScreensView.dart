@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:intl/intl.dart';
+import 'package:lottie/lottie.dart';
 import 'package:weather_project/services/location_services.dart';
 import 'package:weather_project/util/icon.dart';
 import 'package:weather_project/util/weather_icon.dart';
@@ -160,7 +161,7 @@ class _mainScreenViewState extends State<mainScreenView> {
                         ),
                         IconCard(deger: '${translateDer(snapshot.data!.main!.feelsLike)}',icon: Icon(Icons.wash_sharp),string: "Feels Like"),
                         IconCard(deger: '${snapshot.data!.wind!.speed.toString()}',icon: Icon(Icons.wind_power),string: "Speed      "),
-                        IconCard(deger: '${snapshot.data!.clouds!.all.toString()}',icon: Icon(Icons.cloud_outlined),string: "Clouds"),
+                        IconCard(deger: '${snapshot.data!.clouds!.all.toString()}',icon: Icon(Icons.cloud_outlined),string: "Clouds      "),
 
 
                       ],
@@ -176,7 +177,15 @@ class _mainScreenViewState extends State<mainScreenView> {
               return Text('${snapshot.error}');
             }
             // By default, show a loading spinner.
-            return const CircularProgressIndicator();
+            return  Center(
+              child: Container(
+
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
           },
         ),
 

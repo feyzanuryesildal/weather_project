@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:lottie/lottie.dart';
 import 'package:weather_project/services/location_services.dart';
 import 'package:weather_project/view/mainScreensView.dart';
 
@@ -48,7 +49,7 @@ class _weatherViewState extends State<weatherView> {
       userLocation.long = _locData.longitude!;
     });
     
-    Timer(Duration(milliseconds: 500), (){
+    Timer(Duration(milliseconds: 4000), (){
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => mainScreenView()));
     });
   }
@@ -60,6 +61,7 @@ class _weatherViewState extends State<weatherView> {
           backgroundColor: Colors.transparent,
         ),
         body: Center(
+            child: Lottie.network('https://assets10.lottiefiles.com/packages/lf20_x62chJ.json'),
         ),
       );
     }
